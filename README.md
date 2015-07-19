@@ -46,6 +46,7 @@ Lead Maintainer: [Nicolas Morel](https://github.com/marsup)
       - [`array.sparse(enabled)`](#arraysparseenabled)
       - [`array.single(enabled)`](#arraysingleenabled)
       - [`array.items(type)`](#arrayitemstype)
+      - [`array.ordered(enabled)`](#arrayorderedenabled)
       - [`array.min(limit)`](#arrayminlimit)
       - [`array.max(limit)`](#arraymaxlimit)
       - [`array.length(limit)`](#arraylengthlimit)
@@ -598,6 +599,15 @@ var schema = Joi.array().items(Joi.string(), Joi.number()); // array may contain
 var schema = Joi.array().items(Joi.string().required(), Joi.string().required()); // array must contain at least two strings
 var schema = Joi.array().items(Joi.string().valid('not allowed').forbidden(), Joi.string()); // array may contain strings, but none of those strings can match 'not allowed'
 var schema = Joi.array().items(Joi.string().label('My string').required(), Joi.number().required()); // If this fails it can result in `[ValidationError: "value" does not contain [My string] and 1 other required value(s)]`
+```
+
+#### `array.ordered(enabled)`
+
+A flag to control the match **in order** of `type` with the array values where:
+- `enabled` can be used with a falsy value to go back to the default behavior. Defaults to `true`
+
+```javascript
+var schema = Joi.array().items(Joi.string(), Joi.number()).ordered(); // items in array must match in order. ie: first item must be a string, second item must be a number
 ```
 
 #### `array.min(limit)`

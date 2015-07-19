@@ -795,4 +795,55 @@ describe('array', function () {
             });
         });
     });
+
+    describe('#items.ordered()', function () {
+
+        it('errors when input does not match items in order', function (done) {
+
+            var schema = Joi.array().items([Joi.number(), Joi.string()]).ordered();
+            var input = ['string', 2];
+            schema.validate(input, function (err, value) {
+
+                expect(err).to.exist();
+                expect(err.message).to.equal('"value" at position 0 fails because ["0" must be a number]');
+                done();
+            });
+        });
+
+        it('errors but continues when abortEarly is set to false', function (done) {
+
+            var schema = Joi.array().items([Joi.number(), Joi.string()]).ordered().options({ abortEarly: false });
+            var input = ['string', 2];
+            schema.validate(input, function (err, value) {
+
+                expect(err.details).to.have.length(2);
+                expect(err.message).to.equal('"value" at position 0 fails because ["0" must be a number]. "value" at position 1 fails because ["1" must be a string]');
+                done();
+            });
+        });
+
+        it('validates input against items in order', function (done) {
+
+            var schema = Joi.array().items([Joi.string(), Joi.number()]).ordered(true);
+            var input = ['string', 2];
+            schema.validate(input, function (err, value) {
+
+                expect(value).to.deep.equal(['string', 2]);
+                expect(err).to.not.exist();
+                done();
+            });
+        });
+
+        it('strips item', function (done) {
+
+            var schema = Joi.array().items([Joi.string(), Joi.number().strip(), Joi.number()]).ordered();
+            var input = ['string', 2, 3];
+            schema.validate(input, function (err, value) {
+
+                expect(value).to.deep.equal(['string', 3]);
+                expect(err).to.not.exist();
+                done();
+            });
+        });
+    });
 });
